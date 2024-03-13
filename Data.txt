@@ -1,0 +1,3 @@
+PostgresSQL:
+login - VadimKA
+password - akum1963

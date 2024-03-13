@@ -1,0 +1,72 @@
+create table public.accounts (
+                                 id bigint primary key not null default nextval('accounts_id_seq'::regclass),
+                                 first_name character varying(20) not null,
+                                 last_name character varying(20) not null,
+                                 email character varying(100),
+                                 created timestamp without time zone not null default CURRENT_TIMESTAMP
+);
+
+create table public.cart (
+                             id bigint primary key not null default nextval('cart_id_seq'::regclass),
+                             id_accounts bigint not null,
+                             id_products bigint not null,
+                             quantity integer not null,
+                             foreign key (id_accounts) references public.accounts (id)
+                                 match simple on update no action on delete no action,
+                             foreign key (id_products) references public.products (id)
+                                 match simple on update no action on delete no action
+);
+
+create table public.category (
+                                 id bigint primary key not null default nextval('category_id_seq'::regclass),
+                                 product_group character varying(255)
+);
+
+create table public.link_products_category (
+                                               id bigint primary key not null default nextval('link_products_category_id_seq'::regclass),
+                                               id_products bigint not null,
+                                               id_category bigint not null,
+                                               foreign key (id_category) references public.category (id)
+                                                   match simple on update no action on delete no action,
+                                               foreign key (id_products) references public.products (id)
+                                                   match simple on update no action on delete no action
+);
+
+create table public.orders (
+                               id bigint primary key not null default nextval('orders_id_seq'::regclass),
+                               id_accounts bigint not null,
+                               order_date timestamp without time zone not null,
+                               total_ammount integer,
+                               foreign key (id_accounts) references public.accounts (id)
+                                   match simple on update no action on delete no action
+);
+
+create table public.orders_detail (
+                                      id bigint primary key not null default nextval('orders_detail_id_seq'::regclass),
+                                      id_orders bigint not null,
+                                      id_products bigint not null,
+                                      quantity integer not null,
+                                      unit_price integer not null,
+                                      foreign key (id_orders) references public.orders (id)
+                                          match simple on update no action on delete no action,
+                                      foreign key (id_products) references public.products (id)
+                                          match simple on update no action on delete no action
+);
+
+create table public.products (
+                                 id bigint primary key not null default nextval('products_id_seq'::regclass),
+                                 name character varying(100) not null,
+                                 price integer not null,
+                                 quantity integer not null
+);
+
+create table public.security (
+                                 id bigint primary key not null default nextval('security_id_seq'::regclass),
+                                 id_accounts bigint not null,
+                                 username character varying(20) not null,
+                                 password character varying(20) not null,
+                                 role character varying(20),
+                                 foreign key (id_accounts) references public.accounts (id)
+                                     match simple on update no action on delete no action
+);
+
